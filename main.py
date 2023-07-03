@@ -3,6 +3,8 @@ from btpygame import pygameimage, pygamebutton, collide
 
 
 home_directory = os.path.expanduser('~')
+if not(os.path.exists(home_directory + "/.savescleaner/")):
+    os.mkdir(home_directory + "/.savescleaner/")
 if os.path.isfile(home_directory + "/.savescleaner/options.json"):
     optionschecked = True
 else:
@@ -145,3 +147,6 @@ while running:
     clock.tick(60)
 
 pygame.quit()
+
+import sys
+print(sys.path)
