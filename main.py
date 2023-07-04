@@ -147,6 +147,3 @@ while running:
     clock.tick(60)
 
 pygame.quit()
-
-import sys
-print(sys.path)
