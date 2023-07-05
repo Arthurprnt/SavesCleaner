@@ -75,15 +75,15 @@ def deletelogs():
         for d in dirnames:
             if d.startswith(instformat.replace("*", "")):
                 # Find all saves
-                print("Deleting screens in instance " + d)
+                print("Deleting logs in instance " + d)
                 for (dirpath, dirnames, filenames) in os.walk(multipath + "/instances/" + d + "/.minecraft/logs/"):
                     for log in filenames:
-                        file_stat = os.stat(os.path.join(multipath + "/instances/" + d + "/.minecraft/logs/", log))
-                        access_timestamp = datetime.datetime.fromtimestamp(file_stat[stat.ST_ATIME])
+                        file_stat = os.stat(multipath + "/instances/" + d + "/.minecraft/logs/" + log)
+                        access_timestamp = datetime.datetime.fromtimestamp(file_stat[stat.ST_MTIME])
                         elapsed = datetime.datetime.now() - access_timestamp
                         if elapsed.days > 7:
                             os.remove(multipath + "/instances/" + d + "/.minecraft/logs/" + log)
-                print("Screens have been deleted in " + d + " with sucess")
+                print("Logs have been deleted in " + d + " with sucess")
         break
 
 pygame.init()
