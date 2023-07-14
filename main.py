@@ -21,6 +21,7 @@ else:
     ])
     f.close()
     optionschecked = False
+threads = {}
 
 class deleteinst(threading.Thread):
     def __init__(self, thread_name, thread_ID, instance):
@@ -28,6 +29,7 @@ class deleteinst(threading.Thread):
         self.thread_name = thread_name
         self.thread_ID = thread_ID
         self.instance = instance
+        self.done = False
 
         # helper function to execute the threads
 
@@ -54,13 +56,13 @@ class deleteinst(threading.Thread):
                     shutil.rmtree(savepath)
                 break
             print("Saves have been deleted in " + self.instance + " with sucess")
+        self.done = True
 
-def deletesaves():
+def deletesaves(threads):
     f = open(home_directory + "/.savescleaner/options.json")
     data = json.load(f)
     multipath = data["multipath"]
     f.close()
-    threads = {}
     n = 1
     for (dirpath, dirnames, filenames) in os.walk(multipath + "/instances/"):
         # Find all instances
@@ -96,8 +98,6 @@ pygame.display.set_icon(pygame.image.load('assets/brush.png'))
 clock = pygame.time.Clock()
 running = True
 isdeleting = False
-deletingsaves = False
-deletingscreens = False
 
 background = pygameimage(pygame.image.load("assets/background.png"), (0, 0))
 deleting = pygameimage(pygame.image.load("assets/deleting.png"), (0, 0))
@@ -108,13 +108,6 @@ btn_options = pygamebutton(pygame.image.load("assets/options.png"), pygame.image
 
 while running:
 
-    if deletingsaves:
-        deletingsaves = False
-        deletesaves()
-    elif deletingscreens:
-        deletingscreens = False
-        deletescreens()
-
     screen.blit(background.image, background.pos)
     if optionschecked:
         btn_clean.display(screen)
@@ -122,17 +115,27 @@ while running:
         btn_screens.display(screen)
     btn_options.display(screen)
 
+    if isdeleting:
+        screen.blit(deleting.image, deleting.pos)
+        finished = True
+        for i in threads.keys():
+            if threads[i].done == False:
+                finished = False
+        if finished:
+            isdeleting = False
+            threads = {}
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == pygame.BUTTON_LEFT and not(isdeleting):
-                if collide(btn_saves, event.pos):
-                    screen.blit(deleting.image, deleting.pos)
-                    deletingsaves = True
+            if event.button == pygame.BUTTON_LEFT:
+                if collide(btn_saves, event.pos) and not(isdeleting):
+                    isdeleting = True
+                    deletesaves(threads)
                 elif collide(btn_screens, event.pos):
                     screen.blit(deleting.image, deleting.pos)
-                    deletingscreens = True
+                    deletescreens()
                 elif collide(btn_options, event.pos):
                     os.startfile(home_directory + "/.savescleaner/options.json")
                     optionschecked = True
