@@ -1,4 +1,4 @@
-import datetime, json, os, pygame, shutil, stat
+import datetime, json, os, pygame, shutil, stat, threading
 from btpygame import pygameimage, pygamebutton, collide
 
 
@@ -22,32 +22,52 @@ else:
     f.close()
     optionschecked = False
 
+class deleteinst(threading.Thread):
+    def __init__(self, thread_name, thread_ID, instance):
+        threading.Thread.__init__(self)
+        self.thread_name = thread_name
+        self.thread_ID = thread_ID
+        self.instance = instance
+
+        # helper function to execute the threads
+
+    def run(self):
+        f = open(home_directory + "/.savescleaner/options.json")
+        data = json.load(f)
+        multipath = data["multipath"]
+        instformat = data["instformat"]
+        saveformat = data["saveformat"]
+        f.close()
+        if self.instance.startswith(instformat.replace("*", "")):
+            # Find all saves
+            print("Deleting saves in instance " + self.instance)
+            for (dirpath, dirnames, filenames) in os.walk(multipath + "/instances/" + self.instance + "/.minecraft/saves/"):
+                saveslist = []
+                for save in dirnames:
+                    if save.startswith(saveformat.replace("*", "")):
+                        saveslist.append(save)
+                for i in range(10):
+                    if len(saveslist) > 0:
+                        saveslist.pop(-1)
+                for subdir in saveslist:
+                    savepath = multipath + "/instances/" + self.instance + "/.minecraft/saves/" + subdir
+                    shutil.rmtree(savepath)
+                break
+            print("Saves have been deleted in " + self.instance + " with sucess")
+
 def deletesaves():
     f = open(home_directory + "/.savescleaner/options.json")
     data = json.load(f)
     multipath = data["multipath"]
-    instformat = data["instformat"]
-    saveformat = data["saveformat"]
     f.close()
+    threads = {}
+    n = 1
     for (dirpath, dirnames, filenames) in os.walk(multipath + "/instances/"):
         # Find all instances
         for d in dirnames:
-            if d.startswith(instformat.replace("*", "")):
-                # Find all saves
-                print("Deleting saves in instance " + d)
-                for (dirpath, dirnames, filenames) in os.walk(multipath + "/instances/" + d + "/.minecraft/saves/"):
-                    saveslist = []
-                    for save in dirnames:
-                        if save.startswith(saveformat.replace("*", "")):
-                            saveslist.append(save)
-                    for i in range(10):
-                        if len(saveslist) > 0:
-                            saveslist.pop(-1)
-                    for subdir in saveslist:
-                        savepath = multipath + "/instances/" + d + "/.minecraft/saves/" + subdir
-                        shutil.rmtree(savepath)
-                    break
-                print("Saves have been deleted in " + d + " with sucess")
+            threads[str(n)] = deleteinst(d, n, d)
+            threads[str(n)].start()
+            n += 1
         break
 
 def deletescreens():
