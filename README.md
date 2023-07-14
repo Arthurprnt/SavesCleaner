@@ -22,7 +22,7 @@ Here are the informations that can be usefull:
 
 - When deleting world files, the tool will keep the 10 last world of each instances.
 - When deleting screenshots, the tool will delete every single one screenshots you have in each instances.
-- When deletins logs, the tool will keep the logs that were modified in the last 7 days for each instances.
+- When deletins logs, the tool will keep the logs that were modified in the last 365 days for each instances.
 - When deletins a record (run and wall), the tool will keep the last record (one for run and one for wall).
 
 ## Settings

@@ -85,7 +85,7 @@ def deletelogs():
                         file_stat = os.stat(multipath + "/instances/" + d + "/.minecraft/logs/" + log)
                         access_timestamp = datetime.datetime.fromtimestamp(file_stat[stat.ST_MTIME])
                         elapsed = datetime.datetime.now() - access_timestamp
-                        if elapsed.days > 7:
+                        if elapsed.days > 365:
                             os.remove(multipath + "/instances/" + d + "/.minecraft/logs/" + log)
                 print("Logs have been deleted in " + d + " with sucess")
         break
