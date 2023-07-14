@@ -12,10 +12,10 @@ else:
     f.writelines(["{\n",
                   '\t"multipath": "your multimc path, ex: C:/MultiMC",\n',
                   '\t"instformat": "instances name format, ex: RSG_*",\n',
-                  '\t"saveformat": "saves name format, ex: Random Speedrun #*"\n',
-                  '\t"recordpath": "the path of your records, ex: C:/Users/draqu/Videos"\n',
-                  '\t"recordextension": "the extension of your records, ex: mkv"\n',
-                  '\t"wallrecordpath": "the path of your wall records, ex: C:/Users/draqu/Videos"\n',
+                  '\t"saveformat": "saves name format, ex: Random Speedrun #*",\n',
+                  '\t"recordpath": "the path of your records, ex: C:/Users/draqu/Videos",\n',
+                  '\t"recordextension": "the extension of your records, ex: mkv",\n',
+                  '\t"wallrecordpath": "the path of your wall records, ex: C:/Users/draqu/Videos",\n',
                   '\t"wallrecordextension": "the extension of your wall records, ex: mkv"\n',
                   '}'
     ])
